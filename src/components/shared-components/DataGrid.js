@@ -22,11 +22,9 @@ const HtmlTooltip = withStyles((theme) => ({
 
 const useStyles = makeStyles(DataGridStyles);
 
-const Details = ({ handleSelectedJob }) => {
+const Details = ({ data }) => {
   const classes = useStyles();
   const history = useHistory();
-  const allJobs = useSelector(({ job }) => job.allJobs);
-
   const handleNavigateToDetails = (job) => {
     history.push({
       pathname: `/job_detail/${job?.id}`,
@@ -37,8 +35,9 @@ const Details = ({ handleSelectedJob }) => {
   };
 
   const getColumns = () => {
-    const { ...columns } = allJobs[0];
-    columns["actions"] = "";
+    const { ...columns } = data?.results[0];
+    // columns["actions"] = "";
+    console.log("columns", columns);
 
     return Object.keys(columns)
       .filter((c) => c !== "id")
@@ -57,19 +56,15 @@ const Details = ({ handleSelectedJob }) => {
           renderCell: (params) => {
             return (
               <>
-                {col === "actions" && (
-                  <HtmlTooltip title="View Record" placement="top" arrow>
-                    <RemoveRedEyeOutlinedIcon
-                      className="cursor-pointer"
-                      onClick={(event) => {
-                        event.ignore = true;
-                        handleSelectedJob(params?.row);
-                      }}
-                    />
+                {col === "adult" && (
+                  <HtmlTooltip title={params.value} placement="top" arrow>
+                    <div className="d-flex justify-content-between align-items-center text-[12px]">
+                      {params.value === true ? "Yes" : "No"}
+                    </div>
                   </HtmlTooltip>
                 )}
 
-                {col !== "actions" && (
+                {col !== "adult" && (
                   <HtmlTooltip title={params.value} placement="top" arrow>
                     <div className="d-flex justify-content-between align-items-center text-[12px]">
                       {params.value}
@@ -92,12 +87,12 @@ const Details = ({ handleSelectedJob }) => {
             pagination
             paginationMode="server"
             rowHeight={80}
-            rows={allJobs}
+            rows={data?.results}
             columns={getColumns()}
             onRowClick={(params, event) => {
               if (!event.ignore) handleNavigateToDetails(params.row);
             }}
-            rowCount={allJobs?.length}
+            rowCount={data?.results?.length}
             rowsPerPageOptions={[10, 30, 50, 100]}
             disableSelectionOnClick
             checkboxSelection

@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import jobReducer from "../redux/job/jobSlice";
+import moviesReducer from "../redux/movies/moviesSlice";
 
 export const store = configureStore({
   reducer: {
-    job: jobReducer,
+    movies: moviesReducer,
   },
 });

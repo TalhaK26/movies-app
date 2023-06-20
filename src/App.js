@@ -1,13 +1,13 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "./App.css";
-import JobList from "./components/JobList";
+import NowPlayingList from "./components/NowPlayingList";
 
 const App = () => {
   return (
     <Router>
       <Switch>
-        <Route exact path="/" component={JobList} />
+        <Route exact path="/" component={NowPlayingList} />
       </Switch>
     </Router>
   );
