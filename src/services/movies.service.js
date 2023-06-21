@@ -1,14 +1,14 @@
 import axios from "axios";
 import { API_URL, getAxiosConfig } from "../utilities/constants";
 
-export const getNowPlaying = (region) => {
+export const getNowPlaying = ({ region, page }) => {
   const axiosConfig = getAxiosConfig();
-  const url = `${API_URL}/3/movie/now_playing?region=${region}`;
+  const _page = page ? page : 1;
+  const url = `${API_URL}/3/movie/now_playing?region=${region}&page=${_page}`;
 
   return axios
     .get(url, axiosConfig)
     .then((res) => {
-      console.log("res", res);
       if (res.status === 200) return res?.data;
     })
     .catch((err) => {

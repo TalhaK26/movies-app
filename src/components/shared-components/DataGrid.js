@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import Card from "@mui/material/Card";
 import { makeStyles, withStyles } from "@mui/styles";
@@ -22,22 +22,24 @@ const HtmlTooltip = withStyles((theme) => ({
 
 const useStyles = makeStyles(DataGridStyles);
 
-const Details = ({ data }) => {
+const Details = ({ data, loadServerRows }) => {
   const classes = useStyles();
   const history = useHistory();
-  const handleNavigateToDetails = (job) => {
-    history.push({
-      pathname: `/job_detail/${job?.id}`,
-      state: {
-        currentJob: job,
-      },
-    });
-  };
+  const [page, setPage] = useState(data?.page);
+  const [pageSize, setPageSize] = useState(20);
+
+  useEffect(() => {
+    // When page has changed get the New data from server
+    if (data?.page !== page) getData();
+  }, [page]);
+
+  // API Calls
+  const getData = async () => await loadServerRows(page);
 
   const getColumns = () => {
-    const { ...columns } = data?.results[0];
+    console.log("data", data);
+    const { ...columns } = data?.results?.length ? data?.results[0] : [];
     // columns["actions"] = "";
-    console.log("columns", columns);
 
     return Object.keys(columns)
       .filter((c) => c !== "id")
@@ -84,18 +86,16 @@ const Details = ({ data }) => {
         <div style={{ height: "500px", width: "100%" }}>
           <DataGrid
             className={classes.root}
-            pagination
-            paginationMode="server"
             rowHeight={80}
             rows={data?.results}
             columns={getColumns()}
-            onRowClick={(params, event) => {
-              if (!event.ignore) handleNavigateToDetails(params.row);
-            }}
-            rowCount={data?.results?.length}
-            rowsPerPageOptions={[10, 30, 50, 100]}
+            rowCount={data?.total_results}
             disableSelectionOnClick
             checkboxSelection
+            paginationMode="server"
+            pageSize={pageSize}
+            page={page - 1}
+            onPageChange={(newPage) => setPage(newPage + 1)}
           />
         </div>
       </Card>

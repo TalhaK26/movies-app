@@ -38,23 +38,29 @@ const NowPlayingList = () => {
     setRegion(value);
 
     // Filter after region change
-    await getNowPlayingData(value);
+    await getNowPlayingData(value, nowPlaying?.page);
   };
 
   useEffect(() => {
-    if (!nowPlaying) getNowPlayingData();
+    if (!nowPlaying) getNowPlayingData(region, nowPlaying?.page);
   }, [nowPlaying]);
 
-  // API Call
-  const getNowPlayingData = async (reg) => {
+  const loadServerRows = async (page) => {
+    await getNowPlayingData(region, page);
+  };
+
+  // API Calls
+  // getNowPlayingData API takes 2 args "region" for filter, and "page" for serverside pagination
+  const getNowPlayingData = async (_region, _page) => {
     setLoading(true);
-    const _region = reg ? reg : region;
-    const data = await getNowPlaying(_region);
+    const data = await getNowPlaying({
+      region: _region,
+      page: _page,
+    });
     await dispatch(setNowPlaying(data));
     setLoading(false);
   };
 
-  console.log("nowPlaying", nowPlaying);
   return (
     <div className="h-full">
       {/* Header */}
@@ -98,7 +104,12 @@ const NowPlayingList = () => {
                       <LinearProgress />
                     </Box>
                   ) : (
-                    <DataGrid data={nowPlaying} />
+                    // DataGrid takes 2 props "data" for rows, and "loadServerRows" for API call
+                    // loadServerRows takes 1 argument "page" for serverside pagination
+                    <DataGrid
+                      data={nowPlaying}
+                      loadServerRows={loadServerRows}
+                    />
                   )}
                 </Grid>
               </Grid>
