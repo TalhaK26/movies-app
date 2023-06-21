@@ -1,6 +1,6 @@
 //Helper Functions
 
-export const capitalize = (text) => {
-  const result = text.replace(/([A-Z])/g, " $1");
-  return result.charAt(0).toUpperCase() + result.slice(1);
-};
+export const capitalize = (s) =>
+  s.replace(/^_*(.)|_+(.)/g, (s, c, d) =>
+    c ? c.toUpperCase() : " " + d.toUpperCase()
+  );
