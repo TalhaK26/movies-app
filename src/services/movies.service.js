@@ -1,9 +1,9 @@
 import axios from "axios";
 import { API_URL, getAxiosConfig } from "../utilities/constants";
 
-export const getNowPlaying = () => {
+export const getNowPlaying = (region) => {
   const axiosConfig = getAxiosConfig();
-  const url = `${API_URL}/3/movie/now_playing`;
+  const url = `${API_URL}/3/movie/now_playing?region=${region}`;
 
   return axios
     .get(url, axiosConfig)
