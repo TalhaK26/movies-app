@@ -8,3 +8,11 @@ export const getAxiosConfig = () => {
     },
   };
 };
+
+export const regionsList = [
+  { key: "AE", value: "ae" },
+  { key: "IN", value: "in" },
+  { key: "JP", value: "jp" },
+  { key: "PK", value: "pk" },
+  { key: "US", value: "us" },
+];

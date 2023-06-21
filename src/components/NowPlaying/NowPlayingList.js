@@ -11,6 +11,7 @@ import {
   InputLabel,
   LinearProgress,
 } from "@mui/material";
+import { regionsList } from "../../utilities/constants";
 
 // UI Components
 import NavBar from "../shared-components/Navbar";
@@ -22,20 +23,20 @@ import clsx from "clsx";
 import { getNowPlaying } from "../../services/movies.service";
 
 // Redux Actions
-import { setNowPlaying } from "../../redux/movies/moviesSlice";
+import { setNowPlaying, setRegion } from "../../redux/movies/moviesSlice";
 
 const useStyles = makeStyles(HomeStyles);
 
 const NowPlayingList = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const [region, setRegion] = useState("us");
   const nowPlaying = useSelector(({ movies }) => movies.nowPlaying);
+  const region = useSelector(({ movies }) => movies.selectedRegion);
   const [isLoading, setLoading] = useState(nowPlaying ? false : true);
 
   const handleChange = async (event) => {
     const { value } = event.target;
-    setRegion(value);
+    dispatch(setRegion(value));
 
     // Filter after region change
     await getNowPlayingData(value, nowPlaying?.page);
@@ -69,7 +70,7 @@ const NowPlayingList = () => {
       {/* Main */}
       <div className={clsx(classes.root, "h-full")}>
         <Box sx={{ minWidth: 120 }} className="mt-16">
-          <FormControl className="w-1/5">
+          <FormControl sx={{ width: { sm: "100%", xs: "100%", lg: "25%" } }}>
             <InputLabel id="demo-simple-select-label">Select Region</InputLabel>
             <Select
               labelId="demo-simple-select-label"
@@ -78,11 +79,11 @@ const NowPlayingList = () => {
               label="Region"
               onChange={handleChange}
             >
-              <MenuItem value="ae">AE</MenuItem>
-              <MenuItem value="in">IN</MenuItem>
-              <MenuItem value="jp">JP</MenuItem>
-              <MenuItem value="pk">PK</MenuItem>
-              <MenuItem value="us">US</MenuItem>
+              {regionsList?.map((region, index) => (
+                <MenuItem key={index} value={region?.value}>
+                  {region?.key}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         </Box>

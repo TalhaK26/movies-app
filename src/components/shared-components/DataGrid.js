@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
 import Card from "@mui/material/Card";
 import { makeStyles, withStyles } from "@mui/styles";
 import { DataGridStyles } from "../../styles/DataGridStyles";
 import { capitalize } from "../../utilities/helper";
 import { DataGrid } from "@mui/x-data-grid";
 import Tooltip from "@mui/material/Tooltip";
-import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
-import { useSelector } from "react-redux";
 
 const HtmlTooltip = withStyles((theme) => ({
   tooltip: {
@@ -24,7 +21,6 @@ const useStyles = makeStyles(DataGridStyles);
 
 const Details = ({ data, loadServerRows }) => {
   const classes = useStyles();
-  const history = useHistory();
   const [page, setPage] = useState(data?.page);
   const [pageSize, setPageSize] = useState(20);
 
@@ -37,9 +33,7 @@ const Details = ({ data, loadServerRows }) => {
   const getData = async () => await loadServerRows(page);
 
   const getColumns = () => {
-    console.log("data", data);
     const { ...columns } = data?.results?.length ? data?.results[0] : [];
-    // columns["actions"] = "";
 
     return Object.keys(columns)
       .filter((c) => c !== "id")
@@ -56,25 +50,23 @@ const Details = ({ data, loadServerRows }) => {
             return <b className="text-[14px]">{params.colDef.headerName}</b>;
           },
           renderCell: (params) => {
-            return (
-              <>
-                {col === "adult" && (
-                  <HtmlTooltip title={params.value} placement="top" arrow>
-                    <div className="d-flex justify-content-between align-items-center text-[12px]">
-                      {params.value === true ? "Yes" : "No"}
-                    </div>
-                  </HtmlTooltip>
-                )}
-
-                {col !== "adult" && (
-                  <HtmlTooltip title={params.value} placement="top" arrow>
-                    <div className="d-flex justify-content-between align-items-center text-[12px]">
-                      {params.value}
-                    </div>
-                  </HtmlTooltip>
-                )}
-              </>
-            );
+            if (col === "adult") {
+              return (
+                <HtmlTooltip title={params.value} placement="top" arrow>
+                  <div className="d-flex justify-content-between align-items-center text-[12px]">
+                    {params.value === true ? "Yes" : "No"}
+                  </div>
+                </HtmlTooltip>
+              );
+            } else {
+              return (
+                <HtmlTooltip title={params.value} placement="top" arrow>
+                  <div className="d-flex justify-content-between align-items-center text-[12px]">
+                    {params.value}
+                  </div>
+                </HtmlTooltip>
+              );
+            }
           },
         };
       });
